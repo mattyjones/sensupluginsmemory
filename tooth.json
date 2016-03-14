@@ -30,6 +30,6 @@
     "echo \"this is the publish and should be null\" && make null"
   ],
   "pre_publish": [
-     "make null"
+    "echo \"this is the pre_publish and should be null\" && make null"
   ]
 }
