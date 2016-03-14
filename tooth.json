@@ -2,7 +2,8 @@
   "coordinates": {
     "org": "sensupluginsmemory",
     "name": "sensupluginsmemory",
-    "type": "golang"
+    "type": "golang",
+    "tag": false
   },
   "build": [
     "make pkg=sensupluginsmemory pre-build && make pkg=sensupluginsmemory all"
