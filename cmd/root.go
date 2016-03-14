@@ -34,8 +34,8 @@ var debug bool
 var RootCmd = &cobra.Command{
 	Use:   "sensupluginsmemory",
 	Short: "A set of Sensu checks for memory",
-	Long: `These are general purpose checks that afford the user max control over what is being checked and how`,
-  Run: func(cmd *cobra.Command, args []string) { },
+	Long:  `These are general purpose checks that afford the user max control over what is being checked and how`,
+	Run:   func(cmd *cobra.Command, args []string) {},
 }
 
 func Execute() {
@@ -58,8 +58,8 @@ func initConfig() {
 	}
 
 	viper.SetConfigName(".sensupluginsmemory") // name of config file (without extension)
-	viper.AddConfigPath("$HOME")  // adding home directory as first search path
-	viper.AutomaticEnv()          // read in environment variables that match
+	viper.AddConfigPath("$HOME")               // adding home directory as first search path
+	viper.AutomaticEnv()                       // read in environment variables that match
 
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())

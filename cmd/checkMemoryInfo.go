@@ -21,38 +21,101 @@
 package cmd
 
 import (
-	"fmt"
-
+	"bufio"
 	"github.com/spf13/cobra"
+	"github.com/yieldbot/sensuplugin/sensuutil"
+  "log"
+  "fmt"
+  "os"
+	"regexp"
+	"strconv"
+	"strings"
 )
+
+var warnThreshold int
+var critThreshold int
+var checkKey string
+
+func readLines(path string) ([]string, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+
+	}
+	defer file.Close()
+
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	return lines, scanner.Err()
+
+}
+
+func createMap() map[string]int64 {
+		m := make(map[string]int64)
+		var key string
+		var val int64
+	lines, err := readLines("/proc/meminfo")
+		if err != nil {
+			log.Fatalf("readLines: %s", err)
+		}
+
+		re_space := regexp.MustCompile(`[\s]+`)
+		re_num := regexp.MustCompile(`[0-9]+`)
+
+		for _, line := range lines {
+			l := strings.Split(line, ":")
+
+			for i := range l {
+				if i == 0 {
+					key = l[i]
+				} else {
+					r := re_space.Split(l[i], -1)
+					for _, n := range r {
+						if val, err = strconv.ParseInt(re_num.FindString(n), 10, 32); err == nil {
+							m[key] = val
+						}
+					}
+				}
+			}
+		}
+    return m
+  }
+
+func overThreshold(curVal int64, threshold int64) bool {
+  if curVal > threshold {
+    return true
+  }
+  return false
+}
 
 // checkMemoryInfoCmd represents the checkMemoryInfo command
 var checkMemoryInfoCmd = &cobra.Command{
 	Use:   "checkMemoryInfo",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Check against any value in /proc/meminfo",
+	Long:  `This load /proc/meminfo into a map and allows a user to pass in a key and a warn/crit value to compare against`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// TODO: Work your own magic here
-		fmt.Println("checkMemoryInfo called")
-	},
-}
+
+    data := createMap()
+
+    if overThreshold(data[checkKey], int64(critThreshold)) {
+      fmt.Printf("%v is over the critical threshold of %v",checkKey, critThreshold)
+      sensuutil.Exit("critical")
+    } else if overThreshold(data[checkKey], int64(warnThreshold)) {
+      fmt.Printf("%v is over the warning threshold of %v",checkKey, warnThreshold)
+      sensuutil.Exit("warning")
+    } else {
+      sensuutil.Exit("ok")
+    }
+		},
+	}
 
 func init() {
 	RootCmd.AddCommand(checkMemoryInfoCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// checkMemoryInfoCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// checkMemoryInfoCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
+  checkMemoryInfoCmd.Flags().IntVarP(&warnThreshold, "warn", "", 100000, "the alert warning threshold")
+  checkMemoryInfoCmd.Flags().IntVarP(&critThreshold, "crit", "", 200000, "the alert critical threshold")
+  checkMemoryInfoCmd.Flags().StringVarP(&checkKey, "checkKey", "", "MemFree", "the alert critical threshold")
 }
