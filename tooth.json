@@ -1,8 +1,4 @@
 {
-  "_comments": [
-    "When you want to push a new commit back to GH you will need to add 'version' to the commit block.",
-    "If nothing is there then nothing will be pushed back."
-  ],
   "coordinates": {
     "org": "sensupluginsmemory",
     "name": "sensupluginsmemory",
@@ -20,7 +16,15 @@
   "clean": [
     "make clean"
   ],
+  "_comments": [
+    "When you want to push a new commit back to GH you will need to add \"version\" to the commit block below, preserving the quotes.",
+    "If nothing is there then nothing will be pushed back to GH."
+  ],
   "commit": [
+  ],
+  "_comments": [
+    "When you want to push a new artifact to artifactory you will need to remove the \"make null\" from the publish block below.",
+    "The below command will overwrite the default publish and nothing will happen."
   ],
   "publish": [
     "make null"
