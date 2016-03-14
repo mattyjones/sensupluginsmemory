@@ -20,8 +20,9 @@
   "clean": [
     "make clean"
   ],
-  "commit": [],
+  "commit": [
+  ],
   "publish": [
     "make null"
-  ],
+  ]
 }
