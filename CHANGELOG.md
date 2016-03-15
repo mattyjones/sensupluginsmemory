@@ -7,7 +7,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 
 ## 0.0.2 - 2016-03-14
 ### Added
-- development release (no functional changes)
+- development release(no functional changes)
 
 ## 0.0.1 - 2016-03-14
 
