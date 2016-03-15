@@ -27,5 +27,6 @@
     "The below command will overwrite the default publish and nothing will happen."
   ],
   "publish": [
+    "make null"
   ]
 }
