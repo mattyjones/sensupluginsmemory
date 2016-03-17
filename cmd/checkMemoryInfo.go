@@ -22,14 +22,15 @@ package cmd
 
 import (
 	"bufio"
-	"github.com/spf13/cobra"
-	"github.com/yieldbot/sensuplugin/sensuutil"
-  "log"
-  "fmt"
-  "os"
+	"fmt"
+	"log"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/spf13/cobra"
+	"github.com/yieldbot/sensuplugin/sensuutil"
 )
 
 var warnThreshold int
@@ -54,41 +55,41 @@ func readLines(path string) ([]string, error) {
 }
 
 func createMap() map[string]int64 {
-		m := make(map[string]int64)
-		var key string
-		var val int64
+	m := make(map[string]int64)
+	var key string
+	var val int64
 	lines, err := readLines("/proc/meminfo")
-		if err != nil {
-			log.Fatalf("readLines: %s", err)
-		}
+	if err != nil {
+		log.Fatalf("readLines: %s", err)
+	}
 
-		re_space := regexp.MustCompile(`[\s]+`)
-		re_num := regexp.MustCompile(`[0-9]+`)
+	reSpace := regexp.MustCompile(`[\s]+`)
+	reNum := regexp.MustCompile(`[0-9]+`)
 
-		for _, line := range lines {
-			l := strings.Split(line, ":")
+	for _, line := range lines {
+		l := strings.Split(line, ":")
 
-			for i := range l {
-				if i == 0 {
-					key = l[i]
-				} else {
-					r := re_space.Split(l[i], -1)
-					for _, n := range r {
-						if val, err = strconv.ParseInt(re_num.FindString(n), 10, 32); err == nil {
-							m[key] = val
-						}
+		for i := range l {
+			if i == 0 {
+				key = l[i]
+			} else {
+				r := reSpace.Split(l[i], -1)
+				for _, n := range r {
+					if val, err = strconv.ParseInt(reNum.FindString(n), 10, 32); err == nil {
+						m[key] = val
 					}
 				}
 			}
 		}
-    return m
-  }
+	}
+	return m
+}
 
 func overThreshold(curVal int64, threshold int64) bool {
-  if curVal > threshold {
-    return true
-  }
-  return false
+	if curVal > threshold {
+		return true
+	}
+	return false
 }
 
 // checkMemoryInfoCmd represents the checkMemoryInfo command
@@ -98,24 +99,24 @@ var checkMemoryInfoCmd = &cobra.Command{
 	Long:  `This load /proc/meminfo into a map and allows a user to pass in a key and a warn/crit value to compare against`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-    data := createMap()
+		data := createMap()
 
-    if overThreshold(data[checkKey], int64(critThreshold)) {
-      fmt.Printf("%v is over the critical threshold of %v",checkKey, critThreshold)
-      sensuutil.Exit("critical")
-    } else if overThreshold(data[checkKey], int64(warnThreshold)) {
-      fmt.Printf("%v is over the warning threshold of %v",checkKey, warnThreshold)
-      sensuutil.Exit("warning")
-    } else {
-      sensuutil.Exit("ok")
-    }
-		},
-	}
+		if overThreshold(data[checkKey], int64(critThreshold)) {
+			fmt.Printf("%v is over the critical threshold of %v", checkKey, critThreshold)
+			sensuutil.Exit("critical")
+		} else if overThreshold(data[checkKey], int64(warnThreshold)) {
+			fmt.Printf("%v is over the warning threshold of %v", checkKey, warnThreshold)
+			sensuutil.Exit("warning")
+		} else {
+			sensuutil.Exit("ok")
+		}
+	},
+}
 
 func init() {
 	RootCmd.AddCommand(checkMemoryInfoCmd)
 
-  checkMemoryInfoCmd.Flags().IntVarP(&warnThreshold, "warn", "", 100000, "the alert warning threshold")
-  checkMemoryInfoCmd.Flags().IntVarP(&critThreshold, "crit", "", 200000, "the alert critical threshold")
-  checkMemoryInfoCmd.Flags().StringVarP(&checkKey, "checkKey", "", "MemFree", "the alert critical threshold")
+	checkMemoryInfoCmd.Flags().IntVarP(&warnThreshold, "warn", "", 100000, "the alert warning threshold")
+	checkMemoryInfoCmd.Flags().IntVarP(&critThreshold, "crit", "", 200000, "the alert critical threshold")
+	checkMemoryInfoCmd.Flags().StringVarP(&checkKey, "checkKey", "", "MemFree", "the alert critical threshold")
 }
