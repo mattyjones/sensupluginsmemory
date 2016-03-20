@@ -21,13 +21,7 @@
 package cmd
 
 import (
-	"bufio"
 	"fmt"
-	"log"
-	"os"
-	"regexp"
-	"strconv"
-	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/yieldbot/sensuplugin/sensuutil"
@@ -36,61 +30,7 @@ import (
 var warnThreshold int
 var critThreshold int
 var checkKey string
-
-func readLines(path string) ([]string, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return nil, err
-
-	}
-	defer file.Close()
-
-	var lines []string
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
-	return lines, scanner.Err()
-
-}
-
-func createMap() map[string]int64 {
-	m := make(map[string]int64)
-	var key string
-	var val int64
-	lines, err := readLines("/proc/meminfo")
-	if err != nil {
-		log.Fatalf("readLines: %s", err)
-	}
-
-	reSpace := regexp.MustCompile(`[\s]+`)
-	reNum := regexp.MustCompile(`[0-9]+`)
-
-	for _, line := range lines {
-		l := strings.Split(line, ":")
-
-		for i := range l {
-			if i == 0 {
-				key = l[i]
-			} else {
-				r := reSpace.Split(l[i], -1)
-				for _, n := range r {
-					if val, err = strconv.ParseInt(reNum.FindString(n), 10, 32); err == nil {
-						m[key] = val
-					}
-				}
-			}
-		}
-	}
-	return m
-}
-
-func overThreshold(curVal int64, threshold int64) bool {
-	if curVal > threshold {
-		return true
-	}
-	return false
-}
+var meminfo = "/proc/meminfo"
 
 // checkMemoryInfoCmd represents the checkMemoryInfo command
 var checkMemoryInfoCmd = &cobra.Command{
@@ -99,7 +39,14 @@ var checkMemoryInfoCmd = &cobra.Command{
 	Long:  `This load /proc/meminfo into a map and allows a user to pass in a key and a warn/crit value to compare against`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		data := createMap()
+		data := createMap(meminfo)
+
+		if debug {
+			for k, v := range data {
+				fmt.Println("Key: ", k, "    ", "Current value: ", v)
+			}
+			sensuutil.Exit("Debug")
+		}
 
 		if overThreshold(data[checkKey], int64(critThreshold)) {
 			fmt.Printf("%v is over the critical threshold of %v", checkKey, critThreshold)

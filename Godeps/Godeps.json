@@ -1,6 +1,7 @@
 {
 	"ImportPath": "github.com/yieldbot/sensupluginsmemory",
 	"GoVersion": "go1.5",
+	"GodepVersion": "v60",
 	"Deps": [
 		{
 			"ImportPath": "github.com/BurntSushi/toml",
@@ -9,39 +10,39 @@
 		},
 		{
 			"ImportPath": "github.com/hashicorp/hcl",
-			"Rev": "c84febd4c1079bd13c29e4ae3e052dd0047b0483"
+			"Rev": "fdad7857309386ba76730b9021197e21c5dfc545"
 		},
 		{
 			"ImportPath": "github.com/hashicorp/hcl/hcl/ast",
-			"Rev": "c84febd4c1079bd13c29e4ae3e052dd0047b0483"
+			"Rev": "fdad7857309386ba76730b9021197e21c5dfc545"
 		},
 		{
 			"ImportPath": "github.com/hashicorp/hcl/hcl/parser",
-			"Rev": "c84febd4c1079bd13c29e4ae3e052dd0047b0483"
+			"Rev": "fdad7857309386ba76730b9021197e21c5dfc545"
 		},
 		{
 			"ImportPath": "github.com/hashicorp/hcl/hcl/scanner",
-			"Rev": "c84febd4c1079bd13c29e4ae3e052dd0047b0483"
+			"Rev": "fdad7857309386ba76730b9021197e21c5dfc545"
 		},
 		{
 			"ImportPath": "github.com/hashicorp/hcl/hcl/strconv",
-			"Rev": "c84febd4c1079bd13c29e4ae3e052dd0047b0483"
+			"Rev": "fdad7857309386ba76730b9021197e21c5dfc545"
 		},
 		{
 			"ImportPath": "github.com/hashicorp/hcl/hcl/token",
-			"Rev": "c84febd4c1079bd13c29e4ae3e052dd0047b0483"
+			"Rev": "fdad7857309386ba76730b9021197e21c5dfc545"
 		},
 		{
 			"ImportPath": "github.com/hashicorp/hcl/json/parser",
-			"Rev": "c84febd4c1079bd13c29e4ae3e052dd0047b0483"
+			"Rev": "fdad7857309386ba76730b9021197e21c5dfc545"
 		},
 		{
 			"ImportPath": "github.com/hashicorp/hcl/json/scanner",
-			"Rev": "c84febd4c1079bd13c29e4ae3e052dd0047b0483"
+			"Rev": "fdad7857309386ba76730b9021197e21c5dfc545"
 		},
 		{
 			"ImportPath": "github.com/hashicorp/hcl/json/token",
-			"Rev": "c84febd4c1079bd13c29e4ae3e052dd0047b0483"
+			"Rev": "fdad7857309386ba76730b9021197e21c5dfc545"
 		},
 		{
 			"ImportPath": "github.com/inconshreveable/mousetrap",
@@ -67,11 +68,11 @@
 		},
 		{
 			"ImportPath": "github.com/spf13/cast",
-			"Rev": "ee7b3e0353166ab1f3a605294ac8cd2b77953778"
+			"Rev": "27b586b42e29bec072fe7379259cc719e1289da6"
 		},
 		{
 			"ImportPath": "github.com/spf13/cobra",
-			"Rev": "65a708cee0a4424f4e353d031ce440643e312f92"
+			"Rev": "1bacefc9a216c93293e670067bd159a64b4d72c3"
 		},
 		{
 			"ImportPath": "github.com/spf13/jwalterweatherman",
