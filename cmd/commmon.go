@@ -29,6 +29,8 @@ import (
 	"strings"
 )
 
+var meminfo = "/proc/meminfo"
+
 func readLines(path string) ([]string, error) {
 	file, err := os.Open(path)
 	if err != nil {

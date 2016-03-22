@@ -1,0 +1,6 @@
+---
+sensupluginsmemory:
+  checkMemoryInfo:
+    checkKey: MemFree
+    warn: 1
+    crit: 2

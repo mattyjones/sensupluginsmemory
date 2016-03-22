@@ -31,6 +31,9 @@ import (
 var cfgFile string
 var debug bool
 
+var warnThreshold int
+var critThreshold int
+
 var RootCmd = &cobra.Command{
 	Use:   "sensupluginsmemory",
 	Short: "A set of Sensu checks for memory",
@@ -49,19 +52,21 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.sensupluginsmemory.yaml)")
-	RootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "print debugging info")
+	RootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "print debugging info (if any)")
+	RootCmd.PersistentFlags().IntVar(&warnThreshold, "warn", 0, "the alert warning threshold")
+	RootCmd.PersistentFlags().IntVar(&critThreshold, "crit", 0, "the alert critical threshold")
 }
 
 func initConfig() {
-	if cfgFile != "" { // enable ability to specify config file via flag
+	if cfgFile != "" {
 		viper.SetConfigFile(cfgFile)
 	}
 
-	viper.SetConfigName(".sensupluginsmemory") // name of config file (without extension)
-	viper.AddConfigPath("$HOME")               // adding home directory as first search path
-	viper.AutomaticEnv()                       // read in environment variables that match
+	viper.SetConfigName("sensupluginsmemory")
+	viper.AddConfigPath("/etc/sensuplugins/conf.d")
+	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		// fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
 }

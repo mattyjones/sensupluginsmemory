@@ -24,22 +24,30 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/yieldbot/sensuplugin/sensuutil"
 )
 
-var warnThreshold int
-var critThreshold int
 var checkKey string
-var meminfo = "/proc/meminfo"
 
-// checkMemoryInfoCmd represents the checkMemoryInfo command
 var checkMemoryInfoCmd = &cobra.Command{
 	Use:   "checkMemoryInfo",
 	Short: "Check against any value in /proc/meminfo",
-	Long:  `This load /proc/meminfo into a map and allows a user to pass in a key and a warn/crit value to compare against`,
+	Long: `This load /proc/meminfo into a map and allows a user to pass in a key
+  and a warn/crit value to compare against`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		data := createMap(meminfo)
+		if checkKey == "" {
+			checkKey = viper.GetString("sensupluginsmemory.checkMemoryInfo.checkKey")
+		}
+		if warnThreshold == 0 {
+			warnThreshold = viper.GetInt("sensupluginsmemory.checkMemoryInfo.warn")
+
+		}
+		if critThreshold == 0 {
+			critThreshold = viper.GetInt("sensupluginsmemory.checkMemoryInfo.crit")
+		}
 
 		if debug {
 			for k, v := range data {
@@ -55,6 +63,7 @@ var checkMemoryInfoCmd = &cobra.Command{
 			fmt.Printf("%v is over the warning threshold of %v", checkKey, warnThreshold)
 			sensuutil.Exit("warning")
 		} else {
+			fmt.Println("ok", checkKey, warnThreshold, critThreshold)
 			sensuutil.Exit("ok")
 		}
 	},
@@ -62,8 +71,5 @@ var checkMemoryInfoCmd = &cobra.Command{
 
 func init() {
 	RootCmd.AddCommand(checkMemoryInfoCmd)
-
-	checkMemoryInfoCmd.Flags().IntVarP(&warnThreshold, "warn", "", 100000, "the alert warning threshold")
-	checkMemoryInfoCmd.Flags().IntVarP(&critThreshold, "crit", "", 200000, "the alert critical threshold")
-	checkMemoryInfoCmd.Flags().StringVarP(&checkKey, "checkKey", "", "MemFree", "the key to check")
+	checkMemoryInfoCmd.Flags().StringVar(&checkKey, "checkKey", "", "the key to check")
 }
