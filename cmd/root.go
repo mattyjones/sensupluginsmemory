@@ -55,6 +55,10 @@ func init() {
 	RootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "print debugging info (if any)")
 	RootCmd.PersistentFlags().IntVar(&warnThreshold, "warn", 0, "the alert warning threshold")
 	RootCmd.PersistentFlags().IntVar(&critThreshold, "crit", 0, "the alert critical threshold")
+
+	viper.SetDefault("author", "Yieldbot <infra@yieldbot.com>")
+	viper.SetDefault("license", "MIT")
+
 }
 
 func initConfig() {
