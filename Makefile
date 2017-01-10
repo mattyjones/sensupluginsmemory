@@ -6,7 +6,7 @@ SHELL = /bin/sh
 .PHONY: all build clean pre-build version
 
 version_file = "./version/version.go"
-# version := $(shell cat $(version_file))
+version := $(shell make version)
 
 #EXTLDFLAGS=-linkmode external -X main.version $(version)
 #	will set the variable 'version' in the 'main' package to the value in version
